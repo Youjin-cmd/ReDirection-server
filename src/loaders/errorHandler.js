@@ -5,12 +5,12 @@ async function errorHandlerLoader(app) {
     next(createError(404));
   });
 
-  app.use((err, req, res) => {
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
+  app.use((error, req, res) => {
+    res.locals.message = error.message;
+    res.locals.error = req.app.get("env") === "development" ? error : {};
 
-    res.status(err.status || 500);
-    res.json({ message: err.message });
+    res.status(error.status || 500);
+    res.json({ message: error.message });
   });
 }
 
