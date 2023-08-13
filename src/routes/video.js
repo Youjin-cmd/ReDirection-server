@@ -4,12 +4,12 @@ const upload = require("../middleware/multer");
 const analysisController = require("../controllers/analysis.controller");
 
 const { tryCatch } = require("../utils/tryCatch");
-const sizeLimitErrorHandler = require("../utils/sizeLimitErrorHandler");
+const multerErrorHandler = require("../utils/multerErrorHandler");
 
 router.post(
   "/analysis",
   upload.single("video"),
-  sizeLimitErrorHandler,
+  multerErrorHandler,
   tryCatch(analysisController.analyzeVideo),
 );
 
