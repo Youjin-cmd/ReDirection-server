@@ -1,17 +1,12 @@
 const CreateError = require("http-errors");
 const multer = require("multer");
-const fs = require("fs");
 const path = require("path");
+const ensureFolderExists = require("../utils/ensureFolderExists");
 
-const { ONLY_MP4_ALLOWED } = require("../constants/error");
+const { ONLY_MP4_MOV_ALLOWED } = require("../constants/error");
 const SAVING_DIR = path.join(__dirname, "../../video");
 
-try {
-  fs.readdirSync(SAVING_DIR);
-} catch (error) {
-  console.error("Directory doesn't exist. Creating...");
-  fs.mkdirSync(SAVING_DIR);
-}
+ensureFolderExists(SAVING_DIR);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,8 +23,8 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     const ext = path.extname(file.originalname);
 
-    if (ext !== ".mp4") {
-      return cb(new CreateError(400, ONLY_MP4_ALLOWED));
+    if (ext !== ".mp4" && ext !== ".mov") {
+      return cb(new CreateError(415, ONLY_MP4_MOV_ALLOWED));
     }
 
     cb(null, true);
