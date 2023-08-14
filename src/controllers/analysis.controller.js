@@ -24,6 +24,8 @@ exports.analyzeVideo = async (req, res) => {
     "scale=50:-1",
     "-r",
     "10",
+    "-pix_fmt",
+    "pal8",
     "-y",
     path.join(SAVING_DIR_DOWNSCALE, "%04d.png"),
   ]);
