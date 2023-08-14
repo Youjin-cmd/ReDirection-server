@@ -13,13 +13,13 @@ exports.extractDownscaledFrames = async (req) => {
     "-i",
     req.file.path,
     "-vf",
-    "scale=50:-1",
+    "scale=100:-1",
     "-r",
     "10",
     "-pix_fmt",
     "pal8",
     "-y",
-    path.join(SAVING_DIR_DOWNSCALE, "%04d.png"),
+    path.join(SAVING_DIR_DOWNSCALE, "%01d.png"),
   ]);
 
   return new Promise(
