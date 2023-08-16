@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const ensureFolderExists = (path) => {
+exports.ensureFolderExists = (path) => {
   try {
     fs.readdirSync(path);
   } catch (error) {
@@ -8,5 +8,3 @@ const ensureFolderExists = (path) => {
     fs.mkdirSync(path);
   }
 };
-
-module.exports = ensureFolderExists;

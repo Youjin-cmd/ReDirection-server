@@ -2,7 +2,7 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
 
-const ensureFolderExists = require("../utils/ensureFolderExists");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
 

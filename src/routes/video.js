@@ -3,8 +3,8 @@ const router = express.Router();
 const upload = require("../middleware/multer");
 const analysisController = require("../controllers/analysis.controller");
 
-const { tryCatch } = require("../utils/tryCatch");
-const multerErrorHandler = require("../utils/multerErrorHandler");
+const { tryCatch } = require("../util/tryCatch");
+const { multerErrorHandler } = require("../util/multerErrorHandler");
 
 router.post(
   "/analysis",

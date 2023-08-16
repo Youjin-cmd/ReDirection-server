@@ -4,7 +4,7 @@ const fs = require("fs").promises;
 const path = require("path");
 
 const { NO_FRAME_EXISTS } = require("../constants/error");
-const ensureFolderExists = require("../utils/ensureFolderExists");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 exports.createBlendFrames = async () => {
   const downscaleFolder = path.join(__dirname, "../../downscale");
@@ -15,7 +15,7 @@ exports.createBlendFrames = async () => {
     const files = await fs.readdir(downscaleFolder);
     const filesNum = files.length;
 
-    if (filesNum <= 1) {
+    if (!filesNum) {
       throw CreateError(400, NO_FRAME_EXISTS);
     }
 

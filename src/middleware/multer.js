@@ -1,8 +1,8 @@
 const CreateError = require("http-errors");
 const multer = require("multer");
 const path = require("path");
-const ensureFolderExists = require("../utils/ensureFolderExists");
 
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 const { ONLY_MP4_MOV_ALLOWED } = require("../constants/error");
 const SAVING_DIR = path.join(__dirname, "../../video");
 
