@@ -8,10 +8,10 @@ const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
 
 ensureFolderExists(SAVING_DIR_DOWNSCALE);
 
-exports.extractDownscaledFrames = async (req) => {
+exports.extractDownscaledFrames = async (file) => {
   const ffmpegDownscale = execFile(ffmpegPath, [
     "-i",
-    req.file.path,
+    file.path,
     "-vf",
     "scale=100:-1",
     "-r",

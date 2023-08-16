@@ -7,10 +7,10 @@ const ensureFolderExists = require("../utils/ensureFolderExists");
 const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
 ensureFolderExists(SAVING_DIR_AUDIO);
 
-exports.extractAudio = async (req) => {
+exports.extractAudio = async (file) => {
   const ffmpegAudio = execFile(ffmpegPath, [
     "-i",
-    req.file.path,
+    file.path,
     "-vn",
     "-ar",
     "44100",

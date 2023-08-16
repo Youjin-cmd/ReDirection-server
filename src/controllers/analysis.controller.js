@@ -6,6 +6,7 @@ const {
 } = require("../service/extractDownscaledFrames");
 const { extractAudio } = require("../service/extractAudio");
 const { createBlendFrames } = require("../service/createBlendFrames");
+const { uploadToS3 } = require("../service/uploadToS3");
 
 exports.analyzeVideo = async (req, res) => {
   if (!req.file) {
@@ -13,9 +14,11 @@ exports.analyzeVideo = async (req, res) => {
   }
 
   try {
-    await extractDownscaledFrames(req);
-    await extractAudio(req);
+    await extractDownscaledFrames(req.file);
+    await extractAudio(req.file);
     await createBlendFrames();
+    const analysisVideoUrl = await uploadToS3(req.file);
+    res.send({ success: true, url: analysisVideoUrl });
   } catch (error) {
     console.error("Something went wrong:", error);
     return { success: false, error };
