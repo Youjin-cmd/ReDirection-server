@@ -31,7 +31,7 @@ exports.extractDownscaledFrames = async (file) => {
         process.stderr.write(x.toString());
       });
       ffmpegDownscale.on("close", (code) => {
-        resolve({ success: true, code });
+        resolve();
         return true;
       });
     },

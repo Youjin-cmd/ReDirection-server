@@ -33,7 +33,7 @@ exports.extractAudio = async (file) => {
         process.stderr.write(x.toString());
       });
       ffmpegAudio.on("close", (code) => {
-        resolve({ success: true, code });
+        resolve();
         return true;
       });
     },
