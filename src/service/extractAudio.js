@@ -2,15 +2,15 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
 
-const ensureFolderExists = require("../utils/ensureFolderExists");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
 ensureFolderExists(SAVING_DIR_AUDIO);
 
-exports.extractAudio = async (req) => {
+exports.extractAudio = async (file) => {
   const ffmpegAudio = execFile(ffmpegPath, [
     "-i",
-    req.file.path,
+    file.path,
     "-vn",
     "-ar",
     "44100",
@@ -33,7 +33,7 @@ exports.extractAudio = async (req) => {
         process.stderr.write(x.toString());
       });
       ffmpegAudio.on("close", (code) => {
-        resolve({ success: true, code });
+        resolve();
         return true;
       });
     },

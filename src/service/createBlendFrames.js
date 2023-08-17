@@ -4,7 +4,7 @@ const fs = require("fs").promises;
 const path = require("path");
 
 const { NO_FRAME_EXISTS } = require("../constants/error");
-const ensureFolderExists = require("../utils/ensureFolderExists");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 exports.createBlendFrames = async () => {
   const downscaleFolder = path.join(__dirname, "../../downscale");
@@ -15,7 +15,7 @@ exports.createBlendFrames = async () => {
     const files = await fs.readdir(downscaleFolder);
     const filesNum = files.length;
 
-    if (filesNum <= 1) {
+    if (!filesNum) {
       throw CreateError(400, NO_FRAME_EXISTS);
     }
 
@@ -25,12 +25,9 @@ exports.createBlendFrames = async () => {
 
       await sharp(currentImage)
         .composite([{ input: nextImage, blend: "difference" }])
-        .toFile(
-          path.join(SAVING_DIR_BLEND_FRAMES, `result_${i}.png`),
-          (error) => {
-            if (error) throw error;
-          },
-        );
+        .toFile(path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`), (error) => {
+          if (error) throw error;
+        });
     }
   } catch (error) {
     console.error("Error while processing:", error);

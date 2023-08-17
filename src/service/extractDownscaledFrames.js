@@ -2,16 +2,16 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
 
-const ensureFolderExists = require("../utils/ensureFolderExists");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
 
 ensureFolderExists(SAVING_DIR_DOWNSCALE);
 
-exports.extractDownscaledFrames = async (req) => {
+exports.extractDownscaledFrames = async (file) => {
   const ffmpegDownscale = execFile(ffmpegPath, [
     "-i",
-    req.file.path,
+    file.path,
     "-vf",
     "scale=100:-1",
     "-r",
@@ -31,7 +31,7 @@ exports.extractDownscaledFrames = async (req) => {
         process.stderr.write(x.toString());
       });
       ffmpegDownscale.on("close", (code) => {
-        resolve({ success: true, code });
+        resolve();
         return true;
       });
     },
