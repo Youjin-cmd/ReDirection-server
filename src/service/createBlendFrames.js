@@ -25,12 +25,9 @@ exports.createBlendFrames = async () => {
 
       await sharp(currentImage)
         .composite([{ input: nextImage, blend: "difference" }])
-        .toFile(
-          path.join(SAVING_DIR_BLEND_FRAMES, `result_${i}.png`),
-          (error) => {
-            if (error) throw error;
-          },
-        );
+        .toFile(path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`), (error) => {
+          if (error) throw error;
+        });
     }
   } catch (error) {
     console.error("Error while processing:", error);
