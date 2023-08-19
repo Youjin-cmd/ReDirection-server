@@ -4,11 +4,10 @@ const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
-const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
-
-ensureFolderExists(SAVING_DIR_DOWNSCALE);
-
 exports.extractDownscaledFrames = async (file) => {
+  const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
+  ensureFolderExists(SAVING_DIR_DOWNSCALE);
+
   const ffmpegDownscale = execFile(ffmpegPath, [
     "-i",
     file.path,
@@ -30,7 +29,7 @@ exports.extractDownscaledFrames = async (file) => {
       ffmpegDownscale.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegDownscale.on("close", (code) => {
+      ffmpegDownscale.on("close", () => {
         resolve();
         return true;
       });

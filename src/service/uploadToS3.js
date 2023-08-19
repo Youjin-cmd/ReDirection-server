@@ -10,11 +10,11 @@ const s3Client = new S3Client({
   },
 });
 
-exports.uploadToS3 = async (videoFilePath) => {
+exports.uploadToS3 = async (videoFilePath, location) => {
   const fileStream = fs.createReadStream(videoFilePath);
 
   const bucketName = config.AWS_BUCKET_NAME;
-  const key = "analysis_video/video.mp4";
+  const key = `${location}/${new Date().getTime()}.mp4`;
 
   const uploadParams = {
     Bucket: bucketName,

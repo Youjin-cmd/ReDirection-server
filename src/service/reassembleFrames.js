@@ -5,7 +5,7 @@ const path = require("path");
 exports.reassembleFrames = async (targetFolder) => {
   const ffmpegReassemble = execFile(ffmpegPath, [
     "-i",
-    path.join(targetFolder, "%d.png"),
+    path.join(targetFolder, "%01d.png"),
     "-c:v",
     "libx264",
     "-r",
@@ -13,7 +13,7 @@ exports.reassembleFrames = async (targetFolder) => {
     "-pix_fmt",
     "yuv420p",
     "-y",
-    path.join(targetFolder, "video_with_blended_frames.mp4"),
+    path.join(targetFolder, "reassembled_video.mp4"),
   ]);
 
   return new Promise(
@@ -24,8 +24,8 @@ exports.reassembleFrames = async (targetFolder) => {
       ffmpegReassemble.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegReassemble.on("close", (code) => {
-        resolve(path.join(targetFolder, "video_with_blended_frames.mp4"));
+      ffmpegReassemble.on("close", () => {
+        resolve(path.join(targetFolder, "reassembled_video.mp4"));
       });
     },
     (reject) => {

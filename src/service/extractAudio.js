@@ -4,10 +4,10 @@ const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
-const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
-ensureFolderExists(SAVING_DIR_AUDIO);
-
 exports.extractAudio = async (file) => {
+  const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
+  ensureFolderExists(SAVING_DIR_AUDIO);
+
   const ffmpegAudio = execFile(ffmpegPath, [
     "-i",
     file.path,
@@ -32,7 +32,7 @@ exports.extractAudio = async (file) => {
       ffmpegAudio.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegAudio.on("close", (code) => {
+      ffmpegAudio.on("close", () => {
         resolve();
         return true;
       });
