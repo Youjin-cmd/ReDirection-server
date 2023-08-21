@@ -22,7 +22,7 @@ exports.clearDirectories = async () => {
 
   try {
     for (const directory of directoriesToDelete) {
-      await fs.rmdir(directory, { recursive: true });
+      await fs.rm(directory, { recursive: true });
       console.log(`Directory '${directory}' deleted successfully.`);
     }
   } catch (error) {
