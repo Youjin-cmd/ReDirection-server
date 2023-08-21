@@ -7,8 +7,11 @@ const { extractOriginalFrames } = require("../service/extractOriginalFrames");
 exports.cropVideo = async (req, res) => {
   try {
     await extractOriginalFrames();
-    await cropFrames(req.body);
-    const assembledFile = await reassembleFrames();
+    const result = await cropFrames(req.body);
+    const assembledFile = await reassembleFrames(
+      result.targetFolder,
+      "cropped",
+    );
     const analysisVideoUrl = await uploadToS3(assembledFile, "cropped");
     await clearDirectories();
 
