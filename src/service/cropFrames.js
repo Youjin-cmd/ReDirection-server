@@ -24,19 +24,17 @@ exports.cropFrames = async (startPixelArray) => {
     for (let i = 1; i < filesNum; i++) {
       const currentImage = path.join(SAVING_DIR_ORIGINAL_FRAMES, `${i}.png`);
 
-      if (startPixelArray[i - 1] === undefined) {
-        break;
-      }
-
       await sharp(currentImage)
         .extract({
-          width: 32,
-          height: 56,
+          width: 406,
+          height: 720,
           left: startPixelArray[i - 1],
           top: 0,
         })
         .toFile(path.join(SAVING_DIR_CROPPED_FRAMES, `${i}.png`));
     }
+
+    return { targetFolder: SAVING_DIR_CROPPED_FRAMES };
   } catch (error) {
     console.error("Error while cropping frames:", error);
     throw error;
