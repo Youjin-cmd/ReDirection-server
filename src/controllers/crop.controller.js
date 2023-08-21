@@ -2,11 +2,13 @@ const { cropFrames } = require("../service/cropFrames");
 const { reassembleFrames } = require("../service/reassembleFrames");
 const { uploadToS3 } = require("../service/uploadToS3");
 const { clearDirectories } = require("../service/clearDirectories");
+const { extractOriginalFrames } = require("../service/extractOriginalFrames");
 
 exports.cropVideo = async (req, res) => {
   try {
-    const result = await cropFrames(req.body);
-    const assembledFile = await reassembleFrames(result.targetFolder);
+    await extractOriginalFrames();
+    await cropFrames(req.body);
+    const assembledFile = await reassembleFrames();
     const analysisVideoUrl = await uploadToS3(assembledFile, "cropped");
     await clearDirectories();
 

@@ -32,10 +32,7 @@ exports.extractAudio = async (file) => {
       ffmpegAudio.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegAudio.on("close", () => {
-        resolve();
-        return true;
-      });
+      ffmpegAudio.on("close", resolve);
     },
     (reject) => {
       console.error("Error occured extracting audio:", reject);

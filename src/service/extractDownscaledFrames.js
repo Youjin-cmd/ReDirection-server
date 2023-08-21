@@ -29,10 +29,7 @@ exports.extractDownscaledFrames = async (file) => {
       ffmpegDownscale.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegDownscale.on("close", () => {
-        resolve();
-        return true;
-      });
+      ffmpegDownscale.on("close", resolve);
     },
     (reject) => {
       console.error("Error occured extracting downscaled frames:", reject);

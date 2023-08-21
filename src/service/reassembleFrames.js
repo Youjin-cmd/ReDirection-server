@@ -2,7 +2,12 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
 
+const { ensureFolderExists } = require("../util/ensureFolderExists");
+const { SAVING_DIR_RESULT } = require("../constants/paths");
+
 exports.reassembleFrames = async (targetFolder) => {
+  ensureFolderExists(SAVING_DIR_RESULT);
+
   const ffmpegReassemble = execFile(ffmpegPath, [
     "-i",
     path.join(targetFolder, "%01d.png"),
@@ -13,7 +18,7 @@ exports.reassembleFrames = async (targetFolder) => {
     "-pix_fmt",
     "yuv420p",
     "-y",
-    path.join(targetFolder, "reassembled_video.mp4"),
+    path.join(SAVING_DIR_RESULT, "result_video.mp4"),
   ]);
 
   return new Promise(
@@ -25,7 +30,7 @@ exports.reassembleFrames = async (targetFolder) => {
         process.stderr.write(x.toString());
       });
       ffmpegReassemble.on("close", () => {
-        resolve(path.join(targetFolder, "reassembled_video.mp4"));
+        resolve(path.join(SAVING_DIR_RESULT, "result_video.mp4"));
       });
     },
     (reject) => {

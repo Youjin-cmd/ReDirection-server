@@ -5,14 +5,16 @@ const path = require("path");
 
 const { NO_FRAME_EXISTS } = require("../constants/error");
 const { ensureFolderExists } = require("../util/ensureFolderExists");
+const {
+  SAVING_DIR_ORIGINAL_FRAMES,
+  SAVING_DIR_CROPPED_FRAMES,
+} = require("../constants/paths");
 
 exports.cropFrames = async (startPixelArray) => {
-  const blendFolder = path.join(__dirname, "../../blend");
-  const SAVING_DIR_CROPPED_FRAMES = path.join(__dirname, "../../cropped");
   ensureFolderExists(SAVING_DIR_CROPPED_FRAMES);
 
   try {
-    const files = await fs.readdir(blendFolder);
+    const files = await fs.readdir(SAVING_DIR_ORIGINAL_FRAMES);
     const filesNum = files.length;
 
     if (!filesNum) {
@@ -20,7 +22,7 @@ exports.cropFrames = async (startPixelArray) => {
     }
 
     for (let i = 1; i < filesNum; i++) {
-      const currentImage = path.join(__dirname, `../../blend/${i}.png`);
+      const currentImage = path.join(SAVING_DIR_ORIGINAL_FRAMES, `${i}.png`);
 
       if (startPixelArray[i - 1] === undefined) {
         break;
@@ -35,10 +37,8 @@ exports.cropFrames = async (startPixelArray) => {
         })
         .toFile(path.join(SAVING_DIR_CROPPED_FRAMES, `${i}.png`));
     }
-
-    return { targetFolder: SAVING_DIR_CROPPED_FRAMES };
   } catch (error) {
-    console.error("Error while processing:", error);
+    console.error("Error while cropping frames:", error);
     throw error;
   }
 };
