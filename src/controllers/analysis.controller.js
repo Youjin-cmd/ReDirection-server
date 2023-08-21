@@ -10,6 +10,7 @@ const { createBlendFrames } = require("../service/createBlendFrames");
 const { analyzePixelData } = require("../service/analyzePixelData");
 const { reassembleFrames } = require("../service/reassembleFrames");
 const { uploadToS3 } = require("../service/uploadToS3");
+const { getMetaData } = require("../service/getMetaData");
 
 exports.analyzeVideo = async (req, res) => {
   if (!req.file) {
@@ -17,6 +18,7 @@ exports.analyzeVideo = async (req, res) => {
   }
 
   try {
+    const videoWidth = await getMetaData(req.file);
     await extractDownscaledFrames(req.file);
     await extractAudio(req.file);
     await createBlendFrames();
@@ -28,6 +30,7 @@ exports.analyzeVideo = async (req, res) => {
       success: true,
       url: analysisVideoUrl,
       startPixelArray: result.startPixelArray,
+      videoWidth,
     });
   } catch (error) {
     console.error("Something went wrong:", error);
