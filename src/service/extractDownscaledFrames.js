@@ -3,23 +3,22 @@ const execFile = require("child_process").spawn;
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
-
-const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
-
-ensureFolderExists(SAVING_DIR_DOWNSCALE);
+const { SAVING_DIR_DOWNSCALED_FRAMES } = require("../constants/paths");
 
 exports.extractDownscaledFrames = async (file) => {
+  ensureFolderExists(SAVING_DIR_DOWNSCALED_FRAMES);
+
   const ffmpegDownscale = execFile(ffmpegPath, [
     "-i",
     file.path,
     "-vf",
     "scale=100:-1",
     "-r",
-    "10",
+    "13",
     "-pix_fmt",
     "pal8",
     "-y",
-    path.join(SAVING_DIR_DOWNSCALE, "%01d.png"),
+    path.join(SAVING_DIR_DOWNSCALED_FRAMES, "%01d.png"),
   ]);
 
   return new Promise(
@@ -30,10 +29,7 @@ exports.extractDownscaledFrames = async (file) => {
       ffmpegDownscale.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegDownscale.on("close", (code) => {
-        resolve();
-        return true;
-      });
+      ffmpegDownscale.on("close", resolve);
     },
     (reject) => {
       console.error("Error occured extracting downscaled frames:", reject);

@@ -2,10 +2,15 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
 
-exports.reassembleFrames = async (targetFolder) => {
-  const ffmpegReassemble = execFile(ffmpegPath, [
+const { ensureFolderExists } = require("../util/ensureFolderExists");
+const { SAVING_DIR_RESULT, SAVING_DIR_AUDIO } = require("../constants/paths");
+
+exports.reassembleFrames = async (targetFolder, type) => {
+  ensureFolderExists(SAVING_DIR_RESULT);
+
+  const ffmpegArgument = [
     "-i",
-    path.join(targetFolder, "%d.png"),
+    path.join(targetFolder, "%01d.png"),
     "-c:v",
     "libx264",
     "-r",
@@ -13,8 +18,14 @@ exports.reassembleFrames = async (targetFolder) => {
     "-pix_fmt",
     "yuv420p",
     "-y",
-    path.join(targetFolder, "video_with_blended_frames.mp4"),
-  ]);
+    path.join(SAVING_DIR_RESULT, "result_video.mp4"),
+  ];
+
+  if (type === "cropped") {
+    ffmpegArgument.push("-i", path.join(SAVING_DIR_AUDIO, "audio.mp3"));
+  }
+
+  const ffmpegReassemble = execFile(ffmpegPath, ffmpegArgument);
 
   return new Promise(
     (resolve) => {
@@ -24,8 +35,8 @@ exports.reassembleFrames = async (targetFolder) => {
       ffmpegReassemble.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegReassemble.on("close", (code) => {
-        resolve(path.join(targetFolder, "video_with_blended_frames.mp4"));
+      ffmpegReassemble.on("close", () => {
+        resolve(path.join(SAVING_DIR_RESULT, "result_video.mp4"));
       });
     },
     (reject) => {

@@ -1,16 +1,17 @@
 const CreateError = require("http-errors");
 const multer = require("multer");
+
+const { ONLY_MP4_MOV_ALLOWED } = require("../constants/error");
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
-const { ONLY_MP4_MOV_ALLOWED } = require("../constants/error");
-const SAVING_DIR = path.join(__dirname, "../../video");
 
-ensureFolderExists(SAVING_DIR);
+const SAVING_DIR_VIDEO = path.join(__dirname, "../../video");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, SAVING_DIR);
+    ensureFolderExists(SAVING_DIR_VIDEO);
+    cb(null, SAVING_DIR_VIDEO);
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);

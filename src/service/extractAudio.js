@@ -3,11 +3,11 @@ const execFile = require("child_process").spawn;
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
-
-const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
-ensureFolderExists(SAVING_DIR_AUDIO);
+const { SAVING_DIR_AUDIO } = require("../constants/paths");
 
 exports.extractAudio = async (file) => {
+  ensureFolderExists(SAVING_DIR_AUDIO);
+
   const ffmpegAudio = execFile(ffmpegPath, [
     "-i",
     file.path,
@@ -32,10 +32,7 @@ exports.extractAudio = async (file) => {
       ffmpegAudio.stderr.on("data", (x) => {
         process.stderr.write(x.toString());
       });
-      ffmpegAudio.on("close", (code) => {
-        resolve();
-        return true;
-      });
+      ffmpegAudio.on("close", resolve);
     },
     (reject) => {
       console.error("Error occured extracting audio:", reject);
