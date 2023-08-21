@@ -3,10 +3,10 @@ const execFile = require("child_process").spawn;
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
+const { SAVING_DIR_DOWNSCALED_FRAMES } = require("../constants/paths");
 
 exports.extractDownscaledFrames = async (file) => {
-  const SAVING_DIR_DOWNSCALE = path.join(__dirname, "../../downscale");
-  ensureFolderExists(SAVING_DIR_DOWNSCALE);
+  ensureFolderExists(SAVING_DIR_DOWNSCALED_FRAMES);
 
   const ffmpegDownscale = execFile(ffmpegPath, [
     "-i",
@@ -18,7 +18,7 @@ exports.extractDownscaledFrames = async (file) => {
     "-pix_fmt",
     "pal8",
     "-y",
-    path.join(SAVING_DIR_DOWNSCALE, "%01d.png"),
+    path.join(SAVING_DIR_DOWNSCALED_FRAMES, "%01d.png"),
   ]);
 
   return new Promise(

@@ -3,9 +3,9 @@ const execFile = require("child_process").spawn;
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
+const { SAVING_DIR_AUDIO } = require("../constants/paths");
 
 exports.extractAudio = async (file) => {
-  const SAVING_DIR_AUDIO = path.join(__dirname, "../../audio");
   ensureFolderExists(SAVING_DIR_AUDIO);
 
   const ffmpegAudio = execFile(ffmpegPath, [

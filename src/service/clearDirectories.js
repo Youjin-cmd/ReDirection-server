@@ -1,13 +1,23 @@
 const fs = require("fs").promises;
-const path = require("path");
+const {
+  SAVING_DIR_VIDEO,
+  SAVING_DIR_AUDIO,
+  SAVING_DIR_BLEND_FRAMES,
+  SAVING_DIR_DOWNSCALED_FRAMES,
+  SAVING_DIR_ORIGINAL_FRAMES,
+  SAVING_DIR_CROPPED_FRAMES,
+  SAVING_DIR_RESULT,
+} = require("../constants/paths");
 
 exports.clearDirectories = async () => {
   const directoriesToDelete = [
-    path.join(__dirname, "../../cropped"),
-    path.join(__dirname, "../../blend"),
-    path.join(__dirname, "../../downscale"),
-    path.join(__dirname, "../../video"),
-    path.join(__dirname, "../../audio"),
+    SAVING_DIR_VIDEO,
+    SAVING_DIR_AUDIO,
+    SAVING_DIR_BLEND_FRAMES,
+    SAVING_DIR_DOWNSCALED_FRAMES,
+    SAVING_DIR_ORIGINAL_FRAMES,
+    SAVING_DIR_CROPPED_FRAMES,
+    SAVING_DIR_RESULT,
   ];
 
   try {

@@ -1,8 +1,7 @@
 const CreateError = require("http-errors");
-const path = require("path");
 
 const { UPLOAD_FAILED } = require("../constants/error");
-const { ensureFolderExists } = require("../util/ensureFolderExists");
+
 const {
   extractDownscaledFrames,
 } = require("../service/extractDownscaledFrames");
@@ -16,9 +15,6 @@ exports.analyzeVideo = async (req, res) => {
   if (!req.file) {
     throw CreateError(400, UPLOAD_FAILED);
   }
-
-  const SAVING_DIR_VIDEO = path.join(__dirname, "../../video");
-  ensureFolderExists(SAVING_DIR_VIDEO);
 
   try {
     await extractDownscaledFrames(req.file);

@@ -9,6 +9,7 @@ const {
   BLEND_FRAME_HEIGHT,
   MOTION_THRESHOLD,
 } = require("../constants/constant");
+const { SAVING_DIR_BLEND_FRAMES } = require("../constants/paths");
 
 function calculateImageScore(imageData) {
   const motionDetectedPixels = [];
@@ -39,11 +40,10 @@ function calculateImageScore(imageData) {
 }
 
 exports.analyzePixelData = async () => {
-  const blendFolder = path.join(__dirname, "../../blend");
   const startPixelArray = [];
 
   try {
-    const files = await fs.readdir(blendFolder);
+    const files = await fs.readdir(SAVING_DIR_BLEND_FRAMES);
     const filesNum = files.length;
 
     if (!filesNum) {
@@ -51,7 +51,7 @@ exports.analyzePixelData = async () => {
     }
 
     for (let i = 1; i < filesNum; i++) {
-      const currentImage = path.join(__dirname, `../../blend/${i}.png`);
+      const currentImage = path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`);
 
       await sharp(currentImage)
         .raw()
@@ -66,8 +66,8 @@ exports.analyzePixelData = async () => {
         });
     }
 
-    return { startPixelArray, targetFolder: blendFolder };
+    return { startPixelArray, targetFolder: SAVING_DIR_BLEND_FRAMES };
   } catch (error) {
-    console.error("Error processing the image:", error);
+    console.error("Error while analyzing pixel data:", error);
   }
 };
