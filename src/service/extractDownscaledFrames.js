@@ -14,7 +14,7 @@ exports.extractDownscaledFrames = async (file) => {
     "-vf",
     "scale=100:-1",
     "-r",
-    "10",
+    "13",
     "-pix_fmt",
     "pal8",
     "-y",
