@@ -26,11 +26,11 @@ exports.extractAudio = async (file) => {
 
   return new Promise(
     (resolve) => {
-      ffmpegAudio.stdout.on("data", (x) => {
-        process.stdout.write(x.toString());
+      ffmpegAudio.stdout.on("data", (data) => {
+        process.stdout.write(data.toString());
       });
-      ffmpegAudio.stderr.on("data", (x) => {
-        process.stderr.write(x.toString());
+      ffmpegAudio.stderr.on("data", (data) => {
+        process.stderr.write(data.toString());
       });
       ffmpegAudio.on("close", resolve);
     },

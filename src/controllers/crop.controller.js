@@ -1,7 +1,6 @@
 const { cropFrames } = require("../service/cropFrames");
 const { reassembleFrames } = require("../service/reassembleFrames");
 const { uploadToS3 } = require("../service/uploadToS3");
-const { clearDirectories } = require("../service/clearDirectories");
 const { extractOriginalFrames } = require("../service/extractOriginalFrames");
 
 exports.cropVideo = async (req, res) => {
@@ -12,12 +11,11 @@ exports.cropVideo = async (req, res) => {
       result.targetFolder,
       "cropped",
     );
-    const analysisVideoUrl = await uploadToS3(assembledFile, "cropped");
-    await clearDirectories();
+    const croppedVideoUrl = await uploadToS3(assembledFile, "cropped");
 
     res.send({
       success: true,
-      url: analysisVideoUrl,
+      url: croppedVideoUrl,
     });
   } catch (error) {
     console.error("Something went wrong:", error);
