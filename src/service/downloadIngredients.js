@@ -3,6 +3,7 @@ const config = require("../constants/config");
 const fs = require("fs").promises;
 const path = require("path");
 const { SAVING_DIR_EDITED_RESULT } = require("../constants/paths");
+const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 const s3Client = new S3Client({
   region: config.AWS_S3_REGION,
@@ -13,6 +14,7 @@ const s3Client = new S3Client({
 });
 
 exports.downloadIngredients = async (object) => {
+  ensureFolderExists(SAVING_DIR_EDITED_RESULT);
   const { typeface, stickerName } = object;
   const bucketName = config.AWS_BUCKET_NAME;
 
@@ -51,9 +53,9 @@ exports.downloadIngredients = async (object) => {
 
       results.stickerPath = localPath;
     }
-
-    return results;
   } catch (error) {
     console.error("Error downloading file:", error);
   }
+
+  return results;
 };

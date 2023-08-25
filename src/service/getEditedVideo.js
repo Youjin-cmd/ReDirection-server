@@ -24,8 +24,6 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
     stickerY,
   } = object;
 
-  console.log(typeface, stickerName);
-
   const ffmpegArgument = [];
 
   if (typeface && !stickerName) {
@@ -33,7 +31,7 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-vf",
-      `drawtext=text="${fontContent}":x=${fontX}:y=${fontY}:fontsize=16:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}:box=1:boxcolor=${fontBg}:boxborderw=${fontWidth}`,
+      `drawbox=x=${fontX}:y=${fontY - 4}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=(406-text_w)/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
     );
   }
 
@@ -51,11 +49,11 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
   if (stickerName && typeface) {
     ffmpegArgument.push(
       "-i",
-      downloadedFiles.stickerPath,
-      "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
-      "-vf",
-      `drawtext=text="${fontContent}":x=${fontX}:y=${fontY}:fontsize=16:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}:box=1:boxcolor=${fontBg},overlay=x=${stickerX}:y=${stickerY}`,
+      "-i",
+      downloadedFiles.stickerPath,
+      "-filter_complex",
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${stickerX}:y=${stickerY},drawbox=x=${fontX}:y=${fontY - 7}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=${fontX}+${fontWidth}/2-text_w/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
     );
   }
 
@@ -63,8 +61,6 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
     "-y",
     path.join(SAVING_DIR_EDITED_RESULT, "edited_video.mp4"),
   );
-
-  console.log(ffmpegArgument);
 
   const ffmpegEditVideo = execFile(ffmpegPath, ffmpegArgument);
 
