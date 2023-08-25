@@ -23,11 +23,11 @@ exports.extractDownscaledFrames = async (file) => {
 
   return new Promise(
     (resolve) => {
-      ffmpegDownscale.stdout.on("data", (x) => {
-        process.stdout.write(x.toString());
+      ffmpegDownscale.stdout.on("data", (data) => {
+        process.stdout.write(data.toString());
       });
-      ffmpegDownscale.stderr.on("data", (x) => {
-        process.stderr.write(x.toString());
+      ffmpegDownscale.stderr.on("data", (data) => {
+        process.stderr.write(data.toString());
       });
       ffmpegDownscale.on("close", resolve);
     },

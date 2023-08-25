@@ -26,11 +26,11 @@ exports.extractOriginalFrames = async () => {
 
   return new Promise(
     (resolve) => {
-      ffmpegOriginal.stdout.on("data", (x) => {
-        process.stdout.write(x.toString());
+      ffmpegOriginal.stdout.on("data", (data) => {
+        process.stdout.write(data.toString());
       });
-      ffmpegOriginal.stderr.on("data", (x) => {
-        process.stderr.write(x.toString());
+      ffmpegOriginal.stderr.on("data", (data) => {
+        process.stderr.write(data.toString());
       });
       ffmpegOriginal.on("close", resolve);
     },

@@ -29,11 +29,11 @@ exports.reassembleFrames = async (targetFolder, type) => {
 
   return new Promise(
     (resolve) => {
-      ffmpegReassemble.stdout.on("data", (x) => {
-        process.stdout.write(x.toString());
+      ffmpegReassemble.stdout.on("data", (data) => {
+        process.stdout.write(data.toString());
       });
-      ffmpegReassemble.stderr.on("data", (x) => {
-        process.stderr.write(x.toString());
+      ffmpegReassemble.stderr.on("data", (data) => {
+        process.stderr.write(data.toString());
       });
       ffmpegReassemble.on("close", () => {
         resolve(path.join(SAVING_DIR_RESULT, "result_video.mp4"));
