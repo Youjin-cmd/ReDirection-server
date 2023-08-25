@@ -7,6 +7,7 @@ const {
   SAVING_DIR_ORIGINAL_FRAMES,
   SAVING_DIR_CROPPED_FRAMES,
   SAVING_DIR_RESULT,
+  SAVING_DIR_EDITED_RESULT,
 } = require("../constants/paths");
 
 exports.clearDirectories = async () => {
@@ -18,15 +19,17 @@ exports.clearDirectories = async () => {
     SAVING_DIR_ORIGINAL_FRAMES,
     SAVING_DIR_CROPPED_FRAMES,
     SAVING_DIR_RESULT,
+    SAVING_DIR_EDITED_RESULT,
   ];
 
   try {
-    for (const directory of directoriesToDelete) {
-      await fs.rm(directory, { recursive: true });
-      console.log(`Directory '${directory}' deleted successfully.`);
-    }
+    await Promise.all(
+      directoriesToDelete.map(async (directory) => {
+        await fs.rm(directory, { recursive: true });
+        console.log(`Directory '${directory}' deleted successfully.`);
+      }),
+    );
   } catch (error) {
-    console.error("Error while deleting directory:", error);
-    throw error;
+    console.log("alrady not existing: " + error);
   }
 };
