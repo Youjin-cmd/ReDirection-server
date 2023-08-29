@@ -1,6 +1,12 @@
 const CreateError = require("http-errors");
+const fs = require("fs").promises;
 
 const { UPLOAD_FAILED } = require("../constants/error");
+const {
+  SAVING_DIR_VIDEO,
+  SAVING_DIR_BLEND_FRAMES,
+  SAVING_DIR_DOWNSCALED_FRAMES,
+} = require("../constants/paths");
 
 const {
   extractDownscaledFrames,
@@ -26,6 +32,9 @@ exports.analyzeVideo = async (req, res) => {
     const assembledFile = await reassembleFrames(result.targetFolder);
     const analysisVideoUrl = await uploadToS3(assembledFile, "analysis");
 
+    await fs.rm(SAVING_DIR_BLEND_FRAMES, { recursive: true });
+    await fs.rm(SAVING_DIR_DOWNSCALED_FRAMES, { recursive: true });
+
     res.send({
       success: true,
       url: analysisVideoUrl,
@@ -33,7 +42,7 @@ exports.analyzeVideo = async (req, res) => {
       videoWidth,
     });
   } catch (error) {
-    console.error("Something went wrong:", error);
-    return { success: false, error };
+    await fs.rm(SAVING_DIR_VIDEO, { recursive: true });
+    throw new CreateError(error.status, error.message);
   }
 };

@@ -24,19 +24,19 @@ exports.extractAudio = async (file) => {
     path.join(SAVING_DIR_AUDIO, "audio.mp3"),
   ]);
 
-  return new Promise(
-    (resolve) => {
-      ffmpegAudio.stdout.on("data", (data) => {
-        process.stdout.write(data.toString());
-      });
-      ffmpegAudio.stderr.on("data", (data) => {
-        process.stderr.write(data.toString());
-      });
-      ffmpegAudio.on("close", resolve);
-    },
-    (reject) => {
+  return new Promise((resolve, reject) => {
+    ffmpegAudio.stdout.on("data", (data) => {
+      process.stdout.write(data.toString());
+    });
+
+    ffmpegAudio.stderr.on("data", (data) => {
+      process.stderr.write(data.toString());
+    });
+
+    ffmpegAudio.on("close", resolve);
+
+    ffmpegAudio.on("error", () => {
       console.error("Error occured extracting audio:", reject);
-      return false;
-    },
-  );
+    });
+  });
 };

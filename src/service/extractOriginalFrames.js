@@ -20,23 +20,25 @@ exports.extractOriginalFrames = async () => {
     path.join(SAVING_DIR_VIDEO, firstFile),
     "-r",
     "25",
+    "-vf",
+    "scale=1280:720",
     "-y",
     path.join(SAVING_DIR_ORIGINAL_FRAMES, "%01d.png"),
   ]);
 
-  return new Promise(
-    (resolve) => {
-      ffmpegOriginal.stdout.on("data", (data) => {
-        process.stdout.write(data.toString());
-      });
-      ffmpegOriginal.stderr.on("data", (data) => {
-        process.stderr.write(data.toString());
-      });
-      ffmpegOriginal.on("close", resolve);
-    },
-    (reject) => {
+  return new Promise((resolve, reject) => {
+    ffmpegOriginal.stdout.on("data", (data) => {
+      process.stdout.write(data.toString());
+    });
+
+    ffmpegOriginal.stderr.on("data", (data) => {
+      process.stderr.write(data.toString());
+    });
+
+    ffmpegOriginal.on("close", resolve);
+
+    ffmpegOriginal.on("error", () => {
       console.error("Error occured extracting original frames:", reject);
-      return false;
-    },
-  );
+    });
+  });
 };

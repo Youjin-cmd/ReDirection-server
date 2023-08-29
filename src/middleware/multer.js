@@ -6,7 +6,7 @@ const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
-const SAVING_DIR_VIDEO = path.join(__dirname, "../../video");
+const { SAVING_DIR_VIDEO } = require("../constants/paths");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

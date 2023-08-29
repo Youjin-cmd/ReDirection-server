@@ -21,19 +21,19 @@ exports.extractDownscaledFrames = async (file) => {
     path.join(SAVING_DIR_DOWNSCALED_FRAMES, "%01d.png"),
   ]);
 
-  return new Promise(
-    (resolve) => {
-      ffmpegDownscale.stdout.on("data", (data) => {
-        process.stdout.write(data.toString());
-      });
-      ffmpegDownscale.stderr.on("data", (data) => {
-        process.stderr.write(data.toString());
-      });
-      ffmpegDownscale.on("close", resolve);
-    },
-    (reject) => {
+  return new Promise((resolve, reject) => {
+    ffmpegDownscale.stdout.on("data", (data) => {
+      process.stdout.write(data.toString());
+    });
+
+    ffmpegDownscale.stderr.on("data", (data) => {
+      process.stderr.write(data.toString());
+    });
+
+    ffmpegDownscale.on("close", resolve);
+
+    ffmpegDownscale.on("error", () => {
       console.error("Error occured extracting downscaled frames:", reject);
-      return false;
-    },
-  );
+    });
+  });
 };
