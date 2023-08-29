@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const execFile = require("child_process").spawn;
 const path = require("path");
@@ -65,20 +66,22 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
   const ffmpegEditVideo = execFile(ffmpegPath, ffmpegArgument);
 
   return new Promise(
-    (resolve) => {
+    (resolve, reject) => {
       ffmpegEditVideo.stdout.on("data", (data) => {
         process.stdout.write(data.toString());
       });
+
       ffmpegEditVideo.stderr.on("data", (data) => {
         process.stderr.write(data.toString());
       });
+
       ffmpegEditVideo.on("close", () => {
         resolve(path.join(SAVING_DIR_EDITED_RESULT, "edited_video.mp4"));
       });
-    },
-    (reject) => {
-      console.error("Error occured editing video:", reject);
-      return false;
+
+      ffmpegEditVideo.on("error", () => {
+        console.error("Error occured editing video:", reject);
+      });
     },
   );
 };

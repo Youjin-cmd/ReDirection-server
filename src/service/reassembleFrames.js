@@ -27,21 +27,21 @@ exports.reassembleFrames = async (targetFolder, type) => {
 
   const ffmpegReassemble = execFile(ffmpegPath, ffmpegArgument);
 
-  return new Promise(
-    (resolve) => {
-      ffmpegReassemble.stdout.on("data", (data) => {
-        process.stdout.write(data.toString());
-      });
-      ffmpegReassemble.stderr.on("data", (data) => {
-        process.stderr.write(data.toString());
-      });
-      ffmpegReassemble.on("close", () => {
-        resolve(path.join(SAVING_DIR_RESULT, "result_video.mp4"));
-      });
-    },
-    (reject) => {
+  return new Promise((resolve, reject) => {
+    ffmpegReassemble.stdout.on("data", (data) => {
+      process.stdout.write(data.toString());
+    });
+
+    ffmpegReassemble.stderr.on("data", (data) => {
+      process.stderr.write(data.toString());
+    });
+
+    ffmpegReassemble.on("close", () => {
+      resolve(path.join(SAVING_DIR_RESULT, "result_video.mp4"));
+    });
+
+    ffmpegReassemble.on("error", () => {
       console.error("Error occured reassembling frames:", reject);
-      return false;
-    },
-  );
+    });
+  });
 };
