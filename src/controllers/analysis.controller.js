@@ -27,8 +27,8 @@ exports.analyzeVideo = async (req, res) => {
     const videoWidth = await getMetaData(req.file);
     await extractDownscaledFrames(req.file);
     await extractAudio(req.file);
-    await createBlendFrames();
-    const result = await analyzePixelData();
+    const downscaleFilesNum = await createBlendFrames();
+    const result = await analyzePixelData(downscaleFilesNum);
     const assembledFile = await reassembleFrames(result.targetFolder);
     const analysisVideoUrl = await uploadToS3(assembledFile, "analysis");
 

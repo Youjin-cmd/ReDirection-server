@@ -14,14 +14,16 @@ exports.cropFrames = async (startPixelArray) => {
   ensureFolderExists(SAVING_DIR_CROPPED_FRAMES);
 
   try {
-    const files = await fs.readdir(SAVING_DIR_ORIGINAL_FRAMES);
+    const files = await fs.readdir(SAVING_DIR_ORIGINAL_FRAMES, {
+      withFileTypes: true,
+    });
     const filesNum = files.length;
 
     if (!filesNum) {
       throw CreateError(400, NO_FRAME_EXISTS);
     }
 
-    for (let i = 1; i < filesNum; i++) {
+    for (let i = 1; i < filesNum + 1; i++) {
       const currentImage = path.join(SAVING_DIR_ORIGINAL_FRAMES, `${i}.png`);
 
       await sharp(currentImage)

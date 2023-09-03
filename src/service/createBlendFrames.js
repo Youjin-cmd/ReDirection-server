@@ -14,14 +14,16 @@ exports.createBlendFrames = async () => {
   ensureFolderExists(SAVING_DIR_BLEND_FRAMES);
 
   try {
-    const files = await fs.readdir(SAVING_DIR_DOWNSCALED_FRAMES);
-    const filesNum = files.length;
+    const files = await fs.readdir(SAVING_DIR_DOWNSCALED_FRAMES, {
+      withFileTypes: true,
+    });
+    const downscaleFilesNum = files.length;
 
-    if (!filesNum) {
+    if (!downscaleFilesNum) {
       throw CreateError(400, NO_FRAME_EXISTS);
     }
 
-    for (let i = 1; i < filesNum; i++) {
+    for (let i = 1; i < downscaleFilesNum; i++) {
       const currentImage = path.join(SAVING_DIR_DOWNSCALED_FRAMES, `${i}.png`);
       const nextImage = path.join(SAVING_DIR_DOWNSCALED_FRAMES, `${i + 1}.png`);
 
@@ -31,6 +33,8 @@ exports.createBlendFrames = async () => {
           if (error) throw error;
         });
     }
+
+    return downscaleFilesNum;
   } catch (error) {
     console.error("Error while creating blend frames:", error);
     throw error;

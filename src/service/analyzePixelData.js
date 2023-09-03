@@ -1,9 +1,8 @@
 const CreateError = require("http-errors");
 const sharp = require("sharp");
-const fs = require("fs").promises;
 const path = require("path");
 
-const { NO_IMAGE_EXISTS } = require("../constants/error");
+const { NO_FRAME_EXISTS } = require("../constants/error");
 const {
   BLEND_FRAME_WIDTH,
   BLEND_FRAME_HEIGHT,
@@ -39,18 +38,16 @@ function calculateImageScore(imageData) {
   return centerOfMovedArea;
 }
 
-exports.analyzePixelData = async () => {
+exports.analyzePixelData = async (downscaleFilesNum) => {
   const startPixelArray = [];
+  const blendFilesNum = downscaleFilesNum - 1;
+
+  if (!downscaleFilesNum) {
+    throw CreateError(400, NO_FRAME_EXISTS);
+  }
 
   try {
-    const files = await fs.readdir(SAVING_DIR_BLEND_FRAMES);
-    const filesNum = files.length;
-
-    if (!filesNum) {
-      throw CreateError(400, NO_IMAGE_EXISTS);
-    }
-
-    for (let i = 1; i < filesNum; i++) {
+    for (let i = 1; i < blendFilesNum + 1; i++) {
       const currentImage = path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`);
 
       await sharp(currentImage)
