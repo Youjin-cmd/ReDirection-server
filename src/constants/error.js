@@ -1,5 +1,5 @@
 exports.UPLOAD_FAILED = "Error occured while uploading video";
-exports.ONLY_MP4_MOV_ALLOWED = "Only mp4 and mov are allowed";
+exports.EXTENTION_NOT_SUPPORTED = "Only .mp4, .mov, .wmv, .avi are allowed";
 exports.VIDEO_TOO_LARGE = "Video size exceeds the limit of 100MB";
 exports.ALREADY_VERTICAL = "The video is already in verical format";
 exports.RATIO_NOT_SUPPORTED = "ratio of the given video is not supported";
