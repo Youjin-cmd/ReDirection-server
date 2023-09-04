@@ -29,12 +29,10 @@ exports.createBlendFrames = async () => {
 
       await sharp(currentImage)
         .composite([{ input: nextImage, blend: "difference" }])
-        .toFile(path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`), (error) => {
-          if (error) throw error;
-        });
+        .toFile(path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`));
     }
 
-    return downscaleFilesNum;
+    return { targetFolder: SAVING_DIR_BLEND_FRAMES };
   } catch (error) {
     console.error("Error while creating blend frames:", error);
     throw error;
