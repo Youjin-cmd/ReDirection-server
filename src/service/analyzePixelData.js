@@ -10,10 +10,10 @@ const {
 } = require("../constants/constant");
 const { SAVING_DIR_BLEND_FRAMES } = require("../constants/paths");
 
-function calculateImageScore(imageData) {
+function calculateImageScore(imageData, leftEdge, rightEdge) {
   const motionDetectedPixels = [];
 
-  for (let row = 0; row < BLEND_FRAME_WIDTH; row++) {
+  for (let row = leftEdge; row < rightEdge; row++) {
     let columnScore = 0;
 
     for (let col = 0; col < BLEND_FRAME_HEIGHT; col++) {
@@ -38,32 +38,33 @@ function calculateImageScore(imageData) {
   return centerOfMovedArea;
 }
 
-exports.analyzePixelData = async (downscaleFilesNum) => {
-  const startPixelArray = [];
-  const blendFilesNum = downscaleFilesNum - 1;
+exports.analyzePixelData = async (leftEdge, rightEdge, filesNum) => {
+  const motionAnalysisArray = [];
 
-  if (!downscaleFilesNum) {
+  if (!filesNum) {
     throw CreateError(400, NO_FRAME_EXISTS);
   }
 
   try {
-    for (let i = 1; i < blendFilesNum + 1; i++) {
+    for (let i = 1; i < filesNum + 1; i++) {
       const currentImage = path.join(SAVING_DIR_BLEND_FRAMES, `${i}.png`);
 
       await sharp(currentImage)
         .raw()
         .toBuffer({ resolveWithObject: true })
         .then(({ data, info }) => {
-          const leftEdge = calculateImageScore(data) - 16;
-          if (leftEdge) {
-            startPixelArray.push(leftEdge);
+          const coordinateToCrop =
+            calculateImageScore(data, leftEdge, rightEdge) - 16;
+
+          if (coordinateToCrop) {
+            motionAnalysisArray.push(coordinateToCrop);
           } else {
-            startPixelArray.push(0);
+            motionAnalysisArray.push(0);
           }
         });
     }
 
-    return { startPixelArray, targetFolder: SAVING_DIR_BLEND_FRAMES };
+    return motionAnalysisArray;
   } catch (error) {
     console.error("Error while analyzing pixel data:", error);
   }
