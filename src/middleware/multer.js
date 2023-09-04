@@ -24,7 +24,7 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     const ext = path.extname(file.originalname);
 
-    if (ext !== ".mp4" && ext !== ".mov") {
+    if (ext !== ".mp4" && ext !== ".mov" && ext !== ".wmv" && ext !== ".avi") {
       return cb(new CreateError(415, ONLY_MP4_MOV_ALLOWED));
     }
 

@@ -2,7 +2,7 @@ const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 const config = require("../constants/config");
 const fs = require("fs").promises;
 const path = require("path");
-const { SAVING_DIR_EDITED_RESULT } = require("../constants/paths");
+const { SAVING_DIR_INGREDIENTS } = require("../constants/paths");
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
 const s3Client = new S3Client({
@@ -14,7 +14,7 @@ const s3Client = new S3Client({
 });
 
 exports.downloadIngredients = async (object) => {
-  ensureFolderExists(SAVING_DIR_EDITED_RESULT);
+  ensureFolderExists(SAVING_DIR_INGREDIENTS);
   const { typeface, stickerName } = object;
   const bucketName = config.AWS_BUCKET_NAME;
 
@@ -30,7 +30,7 @@ exports.downloadIngredients = async (object) => {
       const downloadCommand = new GetObjectCommand(downloadParams);
       const data = await s3Client.send(downloadCommand);
 
-      const localPath = path.join(SAVING_DIR_EDITED_RESULT, `${typeface}.ttf`);
+      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${typeface}.ttf`);
       await fs.writeFile(localPath, data.Body);
 
       results.typefacePath = localPath;
@@ -45,10 +45,7 @@ exports.downloadIngredients = async (object) => {
       const downloadCommand = new GetObjectCommand(downloadParams);
       const data = await s3Client.send(downloadCommand);
 
-      const localPath = path.join(
-        SAVING_DIR_EDITED_RESULT,
-        `${stickerName}.png`,
-      );
+      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${stickerName}.png`);
       await fs.writeFile(localPath, data.Body);
 
       results.stickerPath = localPath;

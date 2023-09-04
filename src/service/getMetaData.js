@@ -1,15 +1,21 @@
 const CreateError = require("http-errors");
+const fs = require("fs");
+const path = require("path");
 
 const {
   ALREADY_VERTICAL,
   RATIO_NOT_SUPPORTED,
   TOO_LONG_OR_SHORT,
 } = require("../constants/error");
+const { SAVING_DIR_VIDEO } = require("../constants/paths");
 
 const ffprobePath = require("@ffprobe-installer/ffprobe").path;
 const execFile = require("child_process").spawn;
 
-exports.getMetaData = async (file) => {
+exports.getMetaData = async () => {
+  const files = fs.readdirSync(SAVING_DIR_VIDEO);
+  const firstFile = files[0];
+
   const ffprobeGetMetaData = execFile(ffprobePath, [
     "-v",
     "error",
@@ -21,7 +27,7 @@ exports.getMetaData = async (file) => {
     "format=duration",
     "-of",
     "json",
-    file.path,
+    path.join(SAVING_DIR_VIDEO, firstFile),
   ]);
 
   let outputData = "";

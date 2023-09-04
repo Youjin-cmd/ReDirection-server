@@ -27,7 +27,16 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
 
   const ffmpegArgument = [];
 
-  if (typeface && !stickerName) {
+  if (typeface && !stickerName && fontBg === "transparent") {
+    ffmpegArgument.push(
+      "-i",
+      path.join(SAVING_DIR_RESULT, "result_video.mp4"),
+      "-vf",
+      `drawtext=text=${fontContent}:x=(406-text_w)/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+    );
+  }
+
+  if (typeface && !stickerName && fontBg !== "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
@@ -47,7 +56,18 @@ exports.getEditedVideo = async (object, downloadedFiles) => {
     );
   }
 
-  if (stickerName && typeface) {
+  if (stickerName && typeface && fontBg === "transparent") {
+    ffmpegArgument.push(
+      "-i",
+      path.join(SAVING_DIR_RESULT, "result_video.mp4"),
+      "-i",
+      downloadedFiles.stickerPath,
+      "-filter_complex",
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${stickerX}:y=${stickerY},drawtext=text=${fontContent}:x=${fontX}+${fontWidth}/2-text_w/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+    );
+  }
+
+  if (stickerName && typeface && fontBg !== "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
