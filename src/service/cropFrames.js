@@ -10,13 +10,11 @@ const {
   SAVING_DIR_CROPPED_FRAMES,
 } = require("../constants/paths");
 
-exports.cropFrames = async (startPixelArray) => {
+exports.cropFrames = async (coordinateArray) => {
   ensureFolderExists(SAVING_DIR_CROPPED_FRAMES);
 
   try {
-    const files = await fs.readdir(SAVING_DIR_ORIGINAL_FRAMES, {
-      withFileTypes: true,
-    });
+    const files = await fs.readdir(SAVING_DIR_ORIGINAL_FRAMES);
     const filesNum = files.length;
 
     if (!filesNum) {
@@ -30,7 +28,7 @@ exports.cropFrames = async (startPixelArray) => {
         .extract({
           width: 406,
           height: 720,
-          left: startPixelArray[i - 1],
+          left: coordinateArray[i - 1],
           top: 0,
         })
         .toFile(path.join(SAVING_DIR_CROPPED_FRAMES, `${i}.png`));
