@@ -56,10 +56,12 @@ exports.analyzePixelData = async (leftEdge, rightEdge, filesNum) => {
           const coordinateToCrop =
             calculateImageScore(data, leftEdge, rightEdge) - 16;
 
-          if (coordinateToCrop) {
-            motionAnalysisArray.push(coordinateToCrop);
-          } else {
+          if (coordinateToCrop <= 0 || !coordinateToCrop) {
             motionAnalysisArray.push(0);
+          } else if (coordinateToCrop > 67) {
+            motionAnalysisArray.push(67);
+          } else {
+            motionAnalysisArray.push(coordinateToCrop);
           }
         });
     }
