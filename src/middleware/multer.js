@@ -1,7 +1,7 @@
 const CreateError = require("http-errors");
 const multer = require("multer");
 
-const { ONLY_MP4_MOV_ALLOWED } = require("../constants/error");
+const { EXTENTION_NOT_SUPPORTED } = require("../constants/error");
 const path = require("path");
 
 const { ensureFolderExists } = require("../util/ensureFolderExists");
@@ -25,7 +25,7 @@ const upload = multer({
     const ext = path.extname(file.originalname);
 
     if (ext !== ".mp4" && ext !== ".mov" && ext !== ".wmv" && ext !== ".avi") {
-      return cb(new CreateError(415, ONLY_MP4_MOV_ALLOWED));
+      return cb(new CreateError(415, EXTENTION_NOT_SUPPORTED));
     }
 
     cb(null, true);
