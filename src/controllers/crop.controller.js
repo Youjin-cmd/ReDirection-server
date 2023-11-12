@@ -18,9 +18,7 @@ const { createFixedArray } = require("../service/createFixedArray");
 const { getMetaData } = require("../service/getMetaData");
 
 exports.cropVideo = async (req, res) => {
-  const { defaultX, defaultW, isFixed, sensitivity } = req.body;
-  const leftEdge = Math.round(defaultX / 10);
-  const rightEdge = Math.round((defaultX + defaultW) / 10);
+  const { leftEdge, rightEdge, isFixed, sensitivity } = req.body;
 
   try {
     const videoWidth = await getMetaData();
