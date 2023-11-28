@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 const path = require("path");
 
+exports.ASSETS_DIR = path.join(__dirname, "../../public/assets");
 exports.SAVING_DIR_VIDEO = path.join(__dirname, "../../temp/video");
 exports.SAVING_DIR_AUDIO = path.join(__dirname, "../../temp/audio");
 exports.SAVING_DIR_DOWNSCALED_FRAMES = path.join(__dirname, "../../temp/downscale");
