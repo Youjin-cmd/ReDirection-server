@@ -9,18 +9,11 @@ const {
 } = require("../constants/paths");
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
-exports.getEditedVideo = async (requestData, downloadedFiles) => {
+exports.getEditedVideo = async (selectedDecos, downloadedFiles) => {
   ensureFolderExists(SAVING_DIR_EDITED_RESULT);
 
-  const {
-    selectedDecos,
-    fontContent,
-    fontWidth,
-    fontColor,
-    fontBg,
-  } = requestData;
-
   const { font, sticker } = selectedDecos;
+  const { X, Y, fontContent, fontBg, fontWidth, fontColor } = font;
 
   const ffmpegArgument = [];
 
@@ -29,7 +22,7 @@ exports.getEditedVideo = async (requestData, downloadedFiles) => {
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-vf",
-      `drawtext=text=${fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
+      `drawtext=text=${fontContent}:x=(406-text_w)/2:y=${Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
@@ -38,7 +31,7 @@ exports.getEditedVideo = async (requestData, downloadedFiles) => {
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-vf",
-      `drawbox=x=${font.X}:y=${font.Y - 4}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
+      `drawbox=x=${X}:y=${Y - 4}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=(406-text_w)/2:y=${Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
@@ -60,7 +53,7 @@ exports.getEditedVideo = async (requestData, downloadedFiles) => {
       "-i",
       downloadedFiles.sticker.path,
       "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawtext=text=${fontContent}:x=${font.X}+${fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawtext=text=${fontContent}:x=${X}+${fontWidth}/2-text_w/2:y=${Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
@@ -71,7 +64,7 @@ exports.getEditedVideo = async (requestData, downloadedFiles) => {
       "-i",
       downloadedFiles.sticker.path,
       "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawbox=x=${font.X}:y=${font.Y - 7}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=${font.X}+${fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawbox=x=${X}:y=${Y - 7}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=${X}+${fontWidth}/2-text_w/2:y=${Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 

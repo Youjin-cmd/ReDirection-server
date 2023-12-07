@@ -17,7 +17,7 @@ exports.editVideo = async (req, res) => {
     const { selectedDecos } = req.body;
 
     const downloadedFiles = await downloadIngredients(selectedDecos);
-    const editedFile = await getEditedVideo(req.body, downloadedFiles);
+    const editedFile = await getEditedVideo(selectedDecos, downloadedFiles);
     const finalVideoUrl = await uploadToS3(editedFile, "edited");
 
     await fs.rm(SAVING_DIR_AUDIO, { recursive: true });
