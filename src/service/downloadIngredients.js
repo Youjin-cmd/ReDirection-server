@@ -13,46 +13,35 @@ const s3Client = new S3Client({
   },
 });
 
-exports.downloadIngredients = async (object) => {
+exports.downloadIngredients = async (selectedSquares) => {
   ensureFolderExists(SAVING_DIR_INGREDIENTS);
-  const { typeface, stickerName } = object;
   const bucketName = config.AWS_BUCKET_NAME;
 
-  const results = {};
+  const result = {};
+
+  const ext = {
+    font: "ttf",
+    sticker: "png",
+  }
 
   try {
-    if (typeface) {
+    for (const element in selectedSquares) {
       const downloadParams = {
         Bucket: bucketName,
-        Key: `fonts/${typeface}.ttf`,
+        Key: `${element}s/${selectedSquares[element].name}.${ext[element]}`,
       };
 
       const downloadCommand = new GetObjectCommand(downloadParams);
       const data = await s3Client.send(downloadCommand);
 
-      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${typeface}.ttf`);
+      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${selectedSquares[element].name}.${ext[element]}`);
       await fs.writeFile(localPath, data.Body);
 
-      results.typefacePath = localPath;
-    }
-
-    if (stickerName) {
-      const downloadParams = {
-        Bucket: bucketName,
-        Key: `stickers/${stickerName}.png`,
-      };
-
-      const downloadCommand = new GetObjectCommand(downloadParams);
-      const data = await s3Client.send(downloadCommand);
-
-      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${stickerName}.png`);
-      await fs.writeFile(localPath, data.Body);
-
-      results.stickerPath = localPath;
+      result[element] = { path: localPath };
     }
   } catch (error) {
     console.error("Error downloading file:", error);
   }
 
-  return results;
+  return result;
 };

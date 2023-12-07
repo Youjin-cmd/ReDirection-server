@@ -9,72 +9,69 @@ const {
 } = require("../constants/paths");
 const { ensureFolderExists } = require("../util/ensureFolderExists");
 
-exports.getEditedVideo = async (object, downloadedFiles) => {
+exports.getEditedVideo = async (requestData, downloadedFiles) => {
   ensureFolderExists(SAVING_DIR_EDITED_RESULT);
 
   const {
-    typeface,
+    selectedSquares,
     fontContent,
-    fontX,
-    fontY,
     fontWidth,
     fontColor,
     fontBg,
-    stickerName,
-    stickerX,
-    stickerY,
-  } = object;
+  } = requestData;
+
+  const { font, sticker } = selectedSquares;
 
   const ffmpegArgument = [];
 
-  if (typeface && !stickerName && fontBg === "transparent") {
+  if (font && !sticker && fontBg === "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-vf",
-      `drawtext=text=${fontContent}:x=(406-text_w)/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+      `drawtext=text=${fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
-  if (typeface && !stickerName && fontBg !== "transparent") {
+  if (font && !sticker && fontBg !== "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-vf",
-      `drawbox=x=${fontX}:y=${fontY - 4}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=(406-text_w)/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+      `drawbox=x=${font.X}:y=${font.Y - 4}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
-  if (stickerName && !typeface) {
+  if (sticker && !font) {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-i",
-      downloadedFiles.stickerPath,
+      downloadedFiles.sticker.path,
       "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${stickerX}:y=${stickerY}`,
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y}`,
     );
   }
 
-  if (stickerName && typeface && fontBg === "transparent") {
+  if (sticker && font && fontBg === "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-i",
-      downloadedFiles.stickerPath,
+      downloadedFiles.sticker.path,
       "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${stickerX}:y=${stickerY},drawtext=text=${fontContent}:x=${fontX}+${fontWidth}/2-text_w/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawtext=text=${fontContent}:x=${font.X}+${fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
-  if (stickerName && typeface && fontBg !== "transparent") {
+  if (sticker && font && fontBg !== "transparent") {
     ffmpegArgument.push(
       "-i",
       path.join(SAVING_DIR_RESULT, "result_video.mp4"),
       "-i",
-      downloadedFiles.stickerPath,
+      downloadedFiles.sticker.path,
       "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${stickerX}:y=${stickerY},drawbox=x=${fontX}:y=${fontY - 7}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=${fontX}+${fontWidth}/2-text_w/2:y=${fontY}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.typefacePath}`,
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawbox=x=${font.X}:y=${font.Y - 7}:w=${fontWidth}:h=35:color=${fontBg}:t=fill,drawtext=text=${fontContent}:x=${font.X}+${fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${fontColor}:fontfile=${downloadedFiles.font.path}`,
     );
   }
 
