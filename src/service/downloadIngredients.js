@@ -13,7 +13,7 @@ const s3Client = new S3Client({
   },
 });
 
-exports.downloadIngredients = async (selectedSquares) => {
+exports.downloadIngredients = async (selectedDecos) => {
   ensureFolderExists(SAVING_DIR_INGREDIENTS);
   const bucketName = config.AWS_BUCKET_NAME;
 
@@ -25,16 +25,16 @@ exports.downloadIngredients = async (selectedSquares) => {
   }
 
   try {
-    for (const element in selectedSquares) {
+    for (const element in selectedDecos) {
       const downloadParams = {
         Bucket: bucketName,
-        Key: `${element}s/${selectedSquares[element].name}.${ext[element]}`,
+        Key: `${element}s/${selectedDecos[element].name}.${ext[element]}`,
       };
 
       const downloadCommand = new GetObjectCommand(downloadParams);
       const data = await s3Client.send(downloadCommand);
 
-      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${selectedSquares[element].name}.${ext[element]}`);
+      const localPath = path.join(SAVING_DIR_INGREDIENTS, `${selectedDecos[element].name}.${ext[element]}`);
       await fs.writeFile(localPath, data.Body);
 
       result[element] = { path: localPath };
