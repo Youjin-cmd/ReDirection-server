@@ -21,45 +21,28 @@ exports.getEditedVideo = async (selectedDecos, downloadedFiles) => {
     path.join(SAVING_DIR_RESULT, "result_video.mp4"),
   );
 
-  if (!sticker && font.fontBg === "transparent") {
+  if (sticker) {
+    ffmpegArgument.push(
+      "-i",
+      downloadedFiles.sticker.path,
+      "-filter_complex",
+      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},`,
+    );
+  }
+
+  if (!sticker) {
     ffmpegArgument.push(
       "-vf",
-      `drawtext=text=${font.fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${font.fontColor}:fontfile=${downloadedFiles.font.path}`,
-    );
+      "",
+    )
   }
 
-  if (font && !sticker && font.fontBg !== "transparent") {
-    ffmpegArgument.push(
-      "-vf",
-      `drawbox=x=${font.X}:y=${font.Y - 4}:w=${font.fontWidth}:h=35:color=${font.fontBg}:t=fill,drawtext=text=${font.fontContent}:x=(406-text_w)/2:y=${font.Y}:fontsize=30:fontcolor=${font.fontColor}:fontfile=${downloadedFiles.font.path}`,
-    );
+  if (font && font.fontBg !== "transparent") {
+    ffmpegArgument[ffmpegArgument.length - 1] += `drawbox=x=${font.X}:y=${font.Y - 4}:w=${font.fontWidth}:h=35:color=${font.fontBg}:t=fill,`;
   }
 
-  if (sticker && !font) {
-    ffmpegArgument.push(
-      "-i",
-      downloadedFiles.sticker.path,
-      "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y}`,
-    );
-  }
-
-  if (sticker && font.fontBg === "transparent") {
-    ffmpegArgument.push(
-      "-i",
-      downloadedFiles.sticker.path,
-      "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawtext=text=${font.fontContent}:x=${font.X}+${font.fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${font.fontColor}:fontfile=${downloadedFiles.font.path}`,
-    );
-  }
-
-  if (sticker && font && font.fontBg !== "transparent") {
-    ffmpegArgument.push(
-      "-i",
-      downloadedFiles.sticker.path,
-      "-filter_complex",
-      `[1:v]scale=150:-1[scaled_sticker];[0:v][scaled_sticker]overlay=x=${sticker.X}:y=${sticker.Y},drawbox=x=${font.X}:y=${font.Y - 7}:w=${font.fontWidth}:h=35:color=${font.fontBg}:t=fill,drawtext=text=${font.fontContent}:x=${font.X}+${font.fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${font.fontColor}:fontfile=${downloadedFiles.font.path}`,
-    );
+  if (font) {
+    ffmpegArgument[ffmpegArgument.length - 1] += `drawtext=text=${font.fontContent}:x=${font.X}+${font.fontWidth}/2-text_w/2:y=${font.Y}:fontsize=30:fontcolor=${font.fontColor}:fontfile=${downloadedFiles.font.path}`;
   }
 
   ffmpegArgument.push(
