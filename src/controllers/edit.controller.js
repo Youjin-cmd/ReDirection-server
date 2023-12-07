@@ -14,9 +14,9 @@ const { downloadIngredients } = require("../service/downloadIngredients");
 
 exports.editVideo = async (req, res) => {
   try {
-    const { selectedSquares } = req.body;
+    const { selectedDecos } = req.body;
 
-    const downloadedFiles = await downloadIngredients(selectedSquares);
+    const downloadedFiles = await downloadIngredients(selectedDecos);
     const editedFile = await getEditedVideo(req.body, downloadedFiles);
     const finalVideoUrl = await uploadToS3(editedFile, "edited");
 

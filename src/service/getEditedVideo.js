@@ -13,14 +13,14 @@ exports.getEditedVideo = async (requestData, downloadedFiles) => {
   ensureFolderExists(SAVING_DIR_EDITED_RESULT);
 
   const {
-    selectedSquares,
+    selectedDecos,
     fontContent,
     fontWidth,
     fontColor,
     fontBg,
   } = requestData;
 
-  const { font, sticker } = selectedSquares;
+  const { font, sticker } = selectedDecos;
 
   const ffmpegArgument = [];
 
