@@ -66,16 +66,16 @@ function flattenArray(arrayWithoutZero) {
   return result;
 }
 
-function scaleUpArray(flattenedArray, videoWidth) {
+function scaleUpArray(flattenedArray) {
   const result = [];
 
   for (let i = 0; i < flattenedArray.length; i++) {
-    const prevValue = (videoWidth / 100) * flattenedArray[i];
+    const prevValue = (1280 / 100) * flattenedArray[i];
 
     result.push(Math.round(prevValue));
 
     if (flattenedArray[i + 1]) {
-      const nextValue = (videoWidth / 100) * flattenedArray[i + 1];
+      const nextValue = (1280 / 100) * flattenedArray[i + 1];
       const middleValue = (nextValue + prevValue) / 2;
 
       result.push(Math.round(middleValue));
@@ -140,11 +140,10 @@ function adjustLengthOfArray(optimizedArray) {
 exports.optimizeArray = async (
   motionAnalysisArray,
   sensitivity,
-  videoWidth,
 ) => {
   const arrayWithoutZero = replaceZero(motionAnalysisArray);
   const flattenedArray = flattenArray(arrayWithoutZero);
-  const scaledUpArray = scaleUpArray(flattenedArray, videoWidth);
+  const scaledUpArray = scaleUpArray(flattenedArray);
   const optimizedArray = applySensitivity(scaledUpArray, sensitivity);
   const finalResult = adjustLengthOfArray(optimizedArray);
 

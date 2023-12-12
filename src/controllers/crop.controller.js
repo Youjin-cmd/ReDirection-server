@@ -21,7 +21,6 @@ exports.cropVideo = async (req, res) => {
   const { leftEdge, rightEdge, isFixed, sensitivity } = req.body;
 
   try {
-    const videoWidth = await getMetaData();
     await extractOriginalFrames();
     const files = await fs.readdir(SAVING_DIR_BLEND_FRAMES);
     const filesNum = files.length;
@@ -30,7 +29,6 @@ exports.cropVideo = async (req, res) => {
       const fixedCoordArray = await createFixedArray(
         leftEdge,
         filesNum,
-        videoWidth,
       );
       await cropFrames(fixedCoordArray);
     }
@@ -44,7 +42,6 @@ exports.cropVideo = async (req, res) => {
       const optimizedArray = await optimizeArray(
         motionAnalysisArray,
         sensitivity,
-        videoWidth,
       );
       await cropFrames(optimizedArray);
     }

@@ -1,7 +1,7 @@
 const CreateError = require("http-errors");
 const { NO_FRAME_EXISTS } = require("../constants/error");
 
-exports.createFixedArray = async (leftEdge, filesNum, videoWidth) => {
+exports.createFixedArray = async (leftEdge, filesNum) => {
   const fixedCoordArray = [];
 
   if (!filesNum) {
@@ -13,7 +13,7 @@ exports.createFixedArray = async (leftEdge, filesNum, videoWidth) => {
       continue;
     }
 
-    fixedCoordArray.push(Math.round((leftEdge / 1000) * videoWidth) * 10);
+    fixedCoordArray.push(Math.round((leftEdge / 1000) * 1280) * 10);
   }
 
   return fixedCoordArray;
